@@ -1,0 +1,4 @@
+﻿  Source.cpp
+c:\vstudiodocs\msr5zbassignment1\gasket3\source.cpp(14): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+  Gasket3.vcxproj -> C:\VStudioDocs\Msr5zbAssignment1\Debug\Gasket3.exe
+  Gasket3.vcxproj -> C:\VStudioDocs\Msr5zbAssignment1\Debug\Gasket3.pdb (Full PDB)

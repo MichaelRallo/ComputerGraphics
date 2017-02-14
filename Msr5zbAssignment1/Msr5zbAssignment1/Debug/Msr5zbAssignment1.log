@@ -1,0 +1,5 @@
+﻿  Square.cpp
+c:\vstudiodocs\msr5zbassignment1\msr5zbassignment1\square.cpp(77): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 1 has type 'int'
+c:\vstudiodocs\msr5zbassignment1\msr5zbassignment1\square.cpp(77): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 2 has type 'int'
+  Msr5zbAssignment1.vcxproj -> C:\VStudioDocs\Msr5zbAssignment1\Debug\Square.exe
+  Msr5zbAssignment1.vcxproj -> C:\VStudioDocs\Msr5zbAssignment1\Debug\Square.pdb (Full PDB)
