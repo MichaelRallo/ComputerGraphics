@@ -1,5 +1,3 @@
-﻿  Source.cpp
-c:\vstudiodocs\msr5zbassignment1\gasket1\source.cpp(105): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 1 has type 'int'
-c:\vstudiodocs\msr5zbassignment1\gasket1\source.cpp(105): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 2 has type 'int'
+﻿  Gasket1.cpp
   Gasket1.vcxproj -> C:\VStudioDocs\Msr5zbAssignment1\Debug\Gasket1.exe
   Gasket1.vcxproj -> C:\VStudioDocs\Msr5zbAssignment1\Debug\Gasket1.pdb (Full PDB)

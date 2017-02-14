@@ -102,7 +102,6 @@ void mouse(int button, int state, int x, int y)
 }
 void reshape(int w, int h)
 {
-	printf("W is: %f, H is: %f", w, h);
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
