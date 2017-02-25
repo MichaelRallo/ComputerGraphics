@@ -1,0 +1,9 @@
+﻿  Main2a.cpp
+c:\vsprojects\computergraphics\msr5zbassignment2\msr5zbassignment2\main2a.cpp(1): warning C4005: 'WIN32': macro redefinition
+  c:\vsprojects\computergraphics\msr5zbassignment2\msr5zbassignment2\main2a.cpp(1): note: command-line arguments:  see previous definition of 'WIN32'
+c:\vsprojects\computergraphics\msr5zbassignment2\msr5zbassignment2\main2a.cpp(68): warning C4018: '<': signed/unsigned mismatch
+c:\vsprojects\computergraphics\msr5zbassignment2\msr5zbassignment2\main2a.cpp(71): warning C4473: 'printf' : not enough arguments passed for format string
+  c:\vsprojects\computergraphics\msr5zbassignment2\msr5zbassignment2\main2a.cpp(71): note: placeholders and their parameters expect 3 variadic arguments, but 1 were provided
+  c:\vsprojects\computergraphics\msr5zbassignment2\msr5zbassignment2\main2a.cpp(71): note: the missing variadic argument 2 is required by format string '%f'
+  Msr5zbAssignment2.vcxproj -> C:\VSProjects\ComputerGraphics\Msr5zbAssignment2\Debug\Msr5zbAssignment2.exe
+  Msr5zbAssignment2.vcxproj -> C:\VSProjects\ComputerGraphics\Msr5zbAssignment2\Debug\Msr5zbAssignment2.pdb (Full PDB)
