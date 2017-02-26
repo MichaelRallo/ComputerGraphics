@@ -1,0 +1,8 @@
+﻿  Source.cpp
+c:\vstudiodocs\computergraphics\msr5zbassignment2\test\opengldefaults.h(3): warning C4005: 'WIN32': macro redefinition
+  c:\vstudiodocs\computergraphics\msr5zbassignment2\test\opengldefaults.h(3): note: command-line arguments:  see previous definition of 'WIN32'
+c:\vstudiodocs\computergraphics\msr5zbassignment2\test\source.cpp(163): warning C4018: '<': signed/unsigned mismatch
+c:\vstudiodocs\computergraphics\msr5zbassignment2\test\source.cpp(171): warning C4018: '<': signed/unsigned mismatch
+c:\vstudiodocs\computergraphics\msr5zbassignment2\test\source.cpp(184): warning C4018: '<': signed/unsigned mismatch
+  Test.vcxproj -> C:\VStudioDocs\ComputerGraphics\Msr5zbAssignment2\Debug\Test.exe
+  Test.vcxproj -> C:\VStudioDocs\ComputerGraphics\Msr5zbAssignment2\Debug\Test.pdb (Full PDB)

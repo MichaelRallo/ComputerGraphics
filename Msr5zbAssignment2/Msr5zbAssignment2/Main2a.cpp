@@ -8,16 +8,16 @@
 //Normalize, then use GL_Scale((maxX+minX)/2,(maxX+minX)/2,(maxX+minX)/2)
 //Then Translate back to this origin.
 
-
-std::vector<GLfloat*> vertices;
-std::vector<GLint*> faces;
-
-static GLfloat spin = 0.0;
-
+/*Globals*/
 enum DisplayType { POINT, VECTOR, FACES };
 DisplayType displayType = POINT;
+std::vector<GLfloat*> vertices;
+std::vector<GLint*> faces;
 char* path = "../Objs/cube.obj";
+char* windowName = "Object Loader";
 
+double dim = 5; /*Dimension of Orthogonal Box*/
+double maxX = 0, maxY = 0, maxZ = 0, minX = 0, minY = 0, minZ = 0;
 
 void loadObject(char* path) {
 
@@ -33,6 +33,7 @@ void loadObject(char* path) {
 	vertices.clear();
 	faces.clear();
 
+	int initFlag = -1;
 	while (!feof(file)) {
 		fscanf(file, "%c", &c);
 		if (c == 'v') {
@@ -41,6 +42,23 @@ void loadObject(char* path) {
 			arrayfloat[0] = f1;
 			arrayfloat[1] = f2;
 			arrayfloat[2] = f3;
+			if (initFlag == -1) {
+				minX = f1;
+				maxX = f1; 
+				minY = f2; 
+				maxY = f2; 
+				minZ = f3; 
+				maxZ = f3; 
+				initFlag = 0;
+			}
+
+			if (f1 > maxX) { maxX = f1; }
+			if (f1 < minX) { minX = f1; }
+			if (f2 > maxY) { maxY = f2; }
+			if (f2 < minY) { minY = f2; }
+			if (f3 > maxZ) { maxZ = f3; }
+			if (f3 < minZ) { minZ = f3; }
+			printf("Coords: %f %f %f \n", arrayfloat[0], arrayfloat[1], arrayfloat[2]);
 			vertices.push_back(arrayfloat);
 		}
 		else if (c == 'f') {
@@ -56,85 +74,158 @@ void loadObject(char* path) {
 }
 
 
+void init()
+{
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	printf("Min Z: %f, Max Z: %f", minZ, maxZ);
+	//glOrtho(minX - 5, maxX + 5, minY - 5, maxY + 5, -(minZ-5), -(maxZ+5));
+	glOrtho(-5, 5, -5, 5, -5, 5);
+	glMatrixMode(GL_MODELVIEW);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glColor3f(0.0, 0.0, 0.0);
+}
 
 void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glPushMatrix();
-	glRotatef(spin, 0.0, 0.0, 1.0);
-	glColor3f(1.0, 1.0, 1.0);
-	glPointSize(3.2);
+	glLoadIdentity();
+
+
+	
+	glPointSize(3.0);
+	glColor3f(0.0, 1.0, 0.0);
 	glBegin(GL_POINTS);
 	for (int i = 0; i<vertices.size(); i++)
 	{
+		printf("Point: %f, %f, %f\n", vertices[i][0], vertices[i][1], vertices[i][2]);
 		glVertex3fv(vertices[i]);
-		printf("Point: %f %f %f", vertices[i][0]);
+		//glVertex3f(2.0, 2.0, 2.0);
+		//glVertex2i(vertices[i][0], vertices[i][1]);
 	}
 	glEnd();
-
-	glPopMatrix();
-
+	glFlush();
 	glutSwapBuffers();
+
+
+	/*	switch (displayType) {
+		case POINT: 
+			glBegin(GL_POINTS);
+			glColor3f(0.0, 1.0, 0.0);
+			for (int i = 0; i<vertices.size(); i++)
+			{
+				//printf("Point: %f, %f, %f\n", vertices[i][0], vertices[i][1], vertices[i][2]);
+				glVertex3fv(vertices[i]);
+				//glVertex3f(2.0, 2.0, 2.0);
+				//glVertex2i(vertices[i][0], vertices[i][1]);
+			}
+			glEnd();
+			break;
+		case VECTOR: 
+			glBegin(GL_LINES);  // GL_LINE_STRIP
+			for (int i = 0; i<faces.size(); i++)
+			{
+				glVertex3fv(vertices[faces[i][0] - 1]);
+				glVertex3fv(vertices[faces[i][1] - 1]);
+				glVertex3fv(vertices[faces[i][1] - 1]);
+				glVertex3fv(vertices[faces[i][2] - 1]);
+				glVertex3fv(vertices[faces[i][2] - 1]);
+				glVertex3fv(vertices[faces[i][0] - 1]);
+			}
+			glEnd();
+			break;
+		case FACES: 
+			glBegin(GL_TRIANGLES);
+			for (int i = 0; i<faces.size(); i++)
+			{
+				glVertex3fv(vertices[faces[i][0] - 1]);
+				glVertex3fv(vertices[faces[i][1] - 1]);
+				glVertex3fv(vertices[faces[i][2] - 1]);
+			}
+			glEnd();
+			break;
+		default:
+			break;
+	}*/
 }
 
-void spinDisplay(void)
-{
-	spin = spin + 2.0;
-	if (spin > 360.0)
-		spin = spin - 360.0;
-	glutPostRedisplay();
-}
 
-void init(void)
-{
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glShadeModel(GL_FLAT);
-}
+void reshape(int width, int height){
 
-void reshape(int w, int h)
-{
-	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
-	glMatrixMode(GL_PROJECTION);
+	
+	double w2h = (height > 0) ? (double)width / height : 1;
+	glViewport(0, 0, width, height);
+	glMatrixMode(GL_PROJECTION_MATRIX);
 	glLoadIdentity();
-	glOrtho(-50.0, 50.0, -50.0, 50.0, -1.0, 1.0);
+	printf("MinX: %f, MaxX: %f | MinY: %f, MaxY: %f | MinZ: %f, MaxZ: %f \n", minX, maxX, minY, maxY, minZ, maxZ);
+	//printf("Otrho: %f, %f, %f, %f, %f, %f \n", -abs(minX*w2h) - 5, +abs(maxX*w2h) + 5, -abs(minY) - 5, +abs(maxY) + 5, abs(minZ) - 5, -abs(maxZ) + 5);
+	//glOrtho(-abs(minX*w2h) -5, +abs(maxX*w2h)+5, -abs(minY)-5, +abs(maxY)+5, +abs(minZ)-5, -abs(maxZ)+5);
+	printf("Otrho: %f, %f, %f, %f, %f, %f \n", -dim*w2h, +dim*w2h, -dim, +dim, -dim, +dim);
+	glOrtho(-dim*w2h, +dim*w2h, -dim, +dim, -dim, +dim);
+
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	/*
+	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity(); 
+	glOrtho(minX - 5, maxX + 5, minY - 5, maxY + 5, -(minZ - 5), -(maxZ + 5));
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	*/
 }
 
-void mouse(int button, int state, int x, int y)
+
+void keyBoardInput(unsigned char key, int x, int y)
 {
-	switch (button) {
-	case GLUT_LEFT_BUTTON:
-		if (state == GLUT_DOWN)
-			glutIdleFunc(spinDisplay);
+
+	switch (key) {
+	case 49:
+		printf("LOL");
+		loadObject("../Objs/cube.obj");
 		break;
-	case GLUT_MIDDLE_BUTTON:
-	case GLUT_RIGHT_BUTTON:
-		if (state == GLUT_DOWN)
-			glutIdleFunc(NULL);
+	case 50:
+		loadObject("../Objs/pig.obj");
+		break;
+	case 51:
+		loadObject("../Objs/teapot.obj");
+		break;
+
+	case 97:
+		displayType = POINT;
+		break;
+
+	case 115:
+		displayType = VECTOR;
+		break;
+
+	case 100:
+		displayType = FACES;
 		break;
 	default:
 		break;
 	}
+	display();
 }
 
-/*
-*  Request double buffer display mode.
-*  Register mouse input callback functions
-*/
-int main(int argc, char** argv)
-{
-	loadObject("../Objs/cube.obj");
 
+
+
+
+void main(int argc, char *argv[])
+{
+	loadObject(path);
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(250, 250);
-	glutInitWindowPosition(100, 100);
-	glutCreateWindow(argv[0]);
-	init();
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutInitWindowSize(500, 500);
+	glutCreateWindow(windowName);
+
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
-	glutMouseFunc(mouse);
+	glutKeyboardFunc(keyBoardInput);
+
 	glutMainLoop();
-	return 0;   /* ANSI C requires main to return int. */
 }
