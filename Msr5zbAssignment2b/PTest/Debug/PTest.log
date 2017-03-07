@@ -1,0 +1,5 @@
+﻿  Source.cpp
+c:\vstudiodocs\computergraphics\msr5zbassignment2b\ptest\opengldefaults.h(3): warning C4005: 'WIN32': macro redefinition
+  c:\vstudiodocs\computergraphics\msr5zbassignment2b\ptest\opengldefaults.h(3): note: command-line arguments:  see previous definition of 'WIN32'
+  PTest.vcxproj -> C:\VStudioDocs\ComputerGraphics\Msr5zbAssignment2b\Debug\PTest.exe
+  PTest.vcxproj -> C:\VStudioDocs\ComputerGraphics\Msr5zbAssignment2b\Debug\PTest.pdb (Full PDB)

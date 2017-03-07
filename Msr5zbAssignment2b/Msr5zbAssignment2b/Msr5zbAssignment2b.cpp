@@ -1,26 +1,42 @@
 #include "OpenGLDefaults.h"
+#define PI 3.1415926535898
+#define Cos(yAngle) cos(PI/180*(yAngle))
+#define Sin(yAngle) sin(PI/180*(yAngle))
+
 /*Michael Rallo msr5zb 12358133*/
 
 /*Env Globals*/
 double dim = 4;
-char* windowName = "Object Loader";
+char* windowName = "Perspective";
 int windowWidth = 600;
 int windowHeight = 600;
+
+
 
 /*State Globals*/
 enum Axis { AXIS_ON, AXIS_OFF };
 Axis axis = AXIS_ON;
-int aziViewAngle = 0;
-int eleViewAngle = 0;
+double xAngle = 0;
+double yAngle = 0;
+double zAngle = 0;
 double aspectRatio = 1;
 double scaler = 1;
+double xTranslate = 0;
+double yTranslate = 0;
+double zTranslate = 0;
 
 int xMouse;
 int yMouse;
+int oldX;
+int oldY;
+int zIndexEnabled = 0;
+
+bool isPressed = false;
+
 int dragging = 0;
-//enum ViewMode {VIEW_PROJECTION, VIEW_ORTHOGONAL};
-//ViewMode viewMode = VIEW_ORTHOGONAL;
-//int fieldOfView = 55;
+enum ViewMode {VIEW_PROJECTION, VIEW_ORTHOGONAL};
+ViewMode viewMode = VIEW_PROJECTION;
+int fieldOfView = 55;
 
 /*Project Globals*/
 std::vector<GLfloat*> vertices;
@@ -30,6 +46,22 @@ double maxX = 0, maxY = 0, maxZ = 0, minX = 0, minY = 0, minZ = 0;
 /*Display Types*/
 enum DisplayType { POINT, VECTOR, FACES };
 DisplayType displayType = VECTOR;
+
+void project() {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if (viewMode == VIEW_PROJECTION) {
+		gluPerspective(fieldOfView, aspectRatio, dim / 4, 4 * dim);
+	}
+	else {
+		glOrtho(-dim*aspectRatio, +dim*aspectRatio, -dim, +dim, -dim, +dim);
+	}
+
+
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
 
 /*Draws the 3d Axis Grid to the Screen*/
 void drawAxis() {
@@ -46,6 +78,30 @@ void drawAxis() {
 		glEnd();
 	}
 }
+
+
+/*Scales the object that has been Loaded in*/
+void scale() {
+	/*Scale*/
+	double distanceX = abs(maxX - minX);
+	double distanceY = abs(maxY - minY);
+	double distanceZ = abs(maxZ - minZ);
+
+	//Find the max distance in order to find best scaler.
+	double maxDistance;
+	if (distanceX > distanceY && distanceX > distanceZ) {
+		maxDistance = distanceX;
+	}
+	else if (distanceY > distanceX && distanceY > distanceZ) {
+		maxDistance = distanceY;
+	}
+	else {
+		maxDistance = distanceZ;
+	}
+	//Calculate Scaler
+	scaler = (dim - 0.5) / maxDistance;
+}
+
 
 /*Loads the .OBJ file given*/
 void loadObject(char* path) {
@@ -108,54 +164,54 @@ void loadObject(char* path) {
 		}
 	}
 	fclose(file);
+
+	//Scale the Object
+	scale();
 }
 
-/*Scales the object that has been Loaded in*/
-void scale() {
-	/*Scale*/
-	double distanceX = abs(maxX - minX);
-	double distanceY = abs(maxY - minY);
-	double distanceZ = abs(maxZ - minZ);
-
-	//Find the max distance in order to find best scaler.
-	double maxDistance;
-	if (distanceX > distanceY && distanceX > distanceZ) {
-		maxDistance = distanceX;
-	}
-	else if (distanceY > distanceX && distanceY > distanceZ) {
-		maxDistance = distanceY;
-	}
-	else {
-		maxDistance = distanceZ;
-	}
-	//Calculate Scaler
-	scaler = (dim - 0.5) / maxDistance;
-	//Scale
-	glScaled(scaler, scaler, scaler);
-}
 
 void display() {
 
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 	glLoadIdentity();
 
-	//Angled Rotation for Better View of 3d Objects
-	glRotated(90, 0, 0, 1);
-	glRotated(70, 0, 1, 0);
-	glRotated(200, 0, 0, 1);
+	if (viewMode == VIEW_PROJECTION) {
+		double Ex = -2*dim*Sin(yAngle)*Cos(xAngle);
+		double Ey = +2*dim            *Sin(xAngle);
+		double Ez = +2*dim*Cos(yAngle)*Cos(xAngle);
+		//printf("EYE: %f, %f, %f\n", Ex, Ey, Ez);
+		printf("Up: %f, Z:%f\n", Cos(xAngle), Sin(zAngle));
+		gluLookAt(Ex, Ey, Ez, 0, 0, 0, 0, Cos(xAngle), 0);
+		//gluLookAt(xAngle, yAngle, zAngle, 0, 0, 0, 0, Cos(xAngle), 0);
 
-	//Set Inputted Rotation
-	glRotated(aziViewAngle, 0, 1, 0);
-	glRotated(eleViewAngle, 0, 0, 1);
+
+	}
+	else {
+		//Angled Rotation for Better View of 3d Objects
+		printf("Up: %f, Z:%f\n", yAngle, zAngle);
+
+		//Set Inputted Rotation
+		glRotated(xAngle, 1, 0, 0);
+		glRotated(yAngle, 0, 1, 0);
+		if (zIndexEnabled) {
+			glRotated(zAngle, 0, 0, 1);
+		}
+	}
+
+
+
 	drawAxis();
 
 	//Colors/Sizes
 	glColor3f(0.0, 1.0, 0.0);
 	glPointSize(4);
 
-	//Scale the Object
-	scale();
+	//Scale
+	glScaled(scaler, scaler, scaler);
+
 	//Move Object to Center
+	glTranslated(xTranslate, yTranslate, zTranslate);
 	glTranslated(-(minX + maxX) / 2, -(minY + maxY) / 2, -(minZ + maxZ) / 2);
 
 	//Display with Desired Type
@@ -206,127 +262,180 @@ void display() {
 void reshape(int width, int height) {
 	aspectRatio = (height > 0) ? (double)width / height : 1;
 	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//printf("Ratio: %f %f | %f %f | %f %f\n", -dim*aspectRatio, +dim*aspectRatio, -dim, +dim, -dim, +dim);
-	glOrtho(-dim*aspectRatio, +dim*aspectRatio, -dim, +dim, -dim, +dim);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	project();
+
 
 }
 
 /*Keyboard Input. */
 void windowKey(unsigned char key, int x, int y) {
-	printf("Key is: %d\n", key);
+	//printf("Key is: %d\n", key);
 	if (key == 27) exit(0);
 	switch (key) {
 	case 27: //ESC
 		exit(0);
 		break;
 
-	case 49: //1
+	//Object Loaders
+	case '1':
 		loadObject("../Objs/cube.obj");
 		break;
-	case 50: //2
+	case '2': 
 		loadObject("../Objs/pig.obj");
 		break;
-	case 51: //3
+	case '3':
 		loadObject("../Objs/teapot.obj");
 		break;
 
-	case 97: //A
+	//Display Types
+	case 'a': 
 		displayType = POINT;
 		break;
-	case 115://S
+	case 's':
 		displayType = VECTOR;
 		break;
-	case 100://D
+	case 'd':
 		displayType = FACES;
 		break;
 
-	case 105://I
+	//Toggle Axis
+	case 'i':
 		if (axis == AXIS_ON) { axis = AXIS_OFF; }
 		else { axis = AXIS_ON; }
+		break;
+
+	//Toggle Perspective
+	case 'p':
+		if (viewMode == VIEW_PROJECTION) { viewMode = VIEW_ORTHOGONAL; }
+		else { viewMode = VIEW_PROJECTION; }
+		break;
+
+	//Zooms
+	case 43://+
+		//fieldOfView--;
+		scaler += 0.01;
+		break;
+
+	case 45://-
+		//fieldOfView++;
+		scaler -= 0.01;
+		break;
+
+	//Translations
+	case 'x':
+		xTranslate += 0.1;
+		break;
+	case 'X':
+		xTranslate -= 0.1;
+		break;
+	case 'y':
+		yTranslate += 0.1;
+		break;
+	case 'Y':
+		yTranslate -= 0.1;
+		break;
+	case 'z':
+		zTranslate += 0.1;
+		break;
+	case 'Z':
+		zTranslate -= 0.1;
+		break;
+
+	case 'o':
+		if (zIndexEnabled) { zIndexEnabled = 0; }
+		else { zIndexEnabled = 1; }
+		break;
+
+	//Reset
+	case 'r':
+		xAngle = 0;
+		yAngle = 0;
+		zAngle = 0;
+		xTranslate = 0;
+		yTranslate = 0;
+		zTranslate = 0;
+		scale();
 		break;
 
 	default:
 		break;
 	}
+	project();
 	glutPostRedisplay();
 }
 
 /*Arrow Key Functionality to Move the Display for the Object*/
 void windowSpecial(int key, int x, int y) {
+	printf("Special Key is: %d\n", key);
 	switch (key) {
-	case GLUT_KEY_LEFT:
-		eleViewAngle += 5;
-		break;
 	case GLUT_KEY_RIGHT:
-		eleViewAngle -= 5;
+		yAngle += 5;
+		break;
+	case GLUT_KEY_LEFT:
+		yAngle -= 5;
 		break;
 	case GLUT_KEY_UP:
-		aziViewAngle += 5;
+		xAngle += 5;
 		break;
 	case GLUT_KEY_DOWN:
-		aziViewAngle -= 5;
+		xAngle -= 5;
 		break;
 	default:break;
 	}
 
-	/*Keep angles +/- 360 degrees*/
-	aziViewAngle %= 360;
-	eleViewAngle %= 360;
+	xAngle = fmod(xAngle, 360);
+	yAngle = fmod(yAngle, 360);
+
+	project();
 	glutPostRedisplay();
 }
 
-void saveMousePos(int x, int y) {
-
-	xMouse = x;
-	yMouse = y;
-	//printf("X: %d, Y: %d\n", xMouse, yMouse);
-
-
-
-}
 /*Mouse Actions*/
 void mouseActions(int button, int state, int x, int y) {
-	if (button == GLUT_LEFT_BUTTON) {
+	printf("Button is: %d\n", button);
 
-		if (state == GLUT_DOWN) {
-			dragging = 1;
+	switch (button) {
+	case GLUT_LEFT_BUTTON:
+		if (state == GLUT_DOWN){
+			oldX = x;
+			oldY = y;
+			isPressed = true;
 		}
-		else {
-			dragging = 0;
-		}
-	}
-	else {
-		dragging = 0;
-	}
+		break;
+	default:
+		isPressed = false;
+		break;
+}
 
+
+	project();
 	glutPostRedisplay();
 }
 
 /*Mouse Movement*/
 void myMotion(int x, int y) {
-	double old_mousex = xMouse;
-	double old_mousey = yMouse;
-	// Compute mouse pos in camera coords & save in globals
-	saveMousePos(x, y);
-
-	if (dragging)
+	if (isPressed)
 	{
-		aziViewAngle -= 5;
-		aziViewAngle %= 360;
-		//eleViewAngle %= 360;
-		glutPostRedisplay();
+		yAngle += 0.01*(x - oldX);
+		xAngle += 0.01*(y - oldY);
+		zAngle += 0.001*((x - oldX)*(y - oldY));
+
+		xAngle = fmod(xAngle, 360);
+		yAngle = fmod(yAngle, 360);
+		zAngle = fmod(zAngle, 360);
+
+		//printf("Rotation X:%f, Y:%f, Z:%f\n", xAngle, yAngle, zAngle);
 	}
+	project();
+	glutPostRedisplay();
+
 
 }
 int main(int argc, char* argv[]) {
 
 	loadObject("../Objs/cube.obj");
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(windowWidth, windowHeight);
 	glutCreateWindow(windowName);
 
