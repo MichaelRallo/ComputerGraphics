@@ -1,0 +1,21 @@
+﻿  Msr5zbAssignment3a.cpp
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\opengldefaults.h(3): warning C4005: 'WIN32': macro redefinition
+  c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\opengldefaults.h(3): note: command-line arguments:  see previous definition of 'WIN32'
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(140): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(141): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(142): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(143): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(145): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(146): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(147): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(148): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(222): warning C4018: '<': signed/unsigned mismatch
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(257): warning C4018: '<': signed/unsigned mismatch
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(341): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(381): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(382): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(396): warning C4018: '<': signed/unsigned mismatch
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(404): warning C4018: '<': signed/unsigned mismatch
+c:\vstudiodocs\msr5zbassignment3a\msr5zbassignment3a\msr5zbassignment3a.cpp(418): warning C4018: '<': signed/unsigned mismatch
+  Msr5zbAssignment3a.vcxproj -> C:\VStudioDocs\Msr5zbAssignment3a\Debug\Msr5zbAssignment3a.exe
+  Msr5zbAssignment3a.vcxproj -> C:\VStudioDocs\Msr5zbAssignment3a\Debug\Msr5zbAssignment3a.pdb (Full PDB)
